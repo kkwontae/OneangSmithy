@@ -3,7 +3,7 @@
 @using Newtonsoft.Json.Linq;
 @inject IHttpClientFactory ClientFactory
 
-<h1>LCK Summer Schedule</h1>
+<h1>LCK Summer Schedule !</h1>
 
 @if (getBranchesError)
 {
@@ -19,10 +19,9 @@ else
     {
 
         var events =
-
             from _event in JObjSchedules["data"]["schedule"]["events"]
             where (DateTime)_event["startTime"] >= new DateTime(2022, 6, 15) // 개막일
-            select new
+    select new
             {
                 LeagueName = (string)_event["league"]["name"],
                 StartTime = (DateTime)_event["startTime"],
@@ -34,84 +33,35 @@ else
                 AwayTeamImage = (string)_event["match"]["teams"][1]["image"],
             };
 
-<table border="1" cellpadding="5" style="background-color:lightgrey">
-    <tr align="center">
-        <td>No.</td>
-        <td>League</td>
-        <td>Date</td>
-        <td colspan="3">Match</td>
-    </tr>
-    @{ int index = 1;}
-    @{ string fontColor; }
-    @foreach (var _event in events)
-    {
-        fontColor = _event.StartTime.AddHours(9) < DateTime.Now ? "gray"
-                        : _event.StartTime.AddHours(9).Date == DateTime.Now.Date && _event.StartTime.AddHours(9).Month == DateTime.Now.Month ? "blue"
-                        : "black";
+    <table border="1" cellpadding="5" style="background-color:lightgrey">
         <tr align="center">
-            <td>@index</td>
-            <td>@_event.LeagueName</td>
-            <td><font color=@fontColor>@_event.StartTime.AddHours(9).ToString("yyyy/MM/dd tt h시")</font></td>
-            <td align="right">@_event.HomeTeamCode <img src="@_event.HomeTeamImage" width="25" height="25" /></td>
-            <td align="center">vs</td>
-            <td align="left"><img src="@_event.AwayTeamImage" width="25" height="25" /> @_event.AwayTeamCode</td>
+            <td>No.</td>
+            <td>League</td>
+            <td>Date</td>
+            <td colspan="3">Match</td>
         </tr>
-        index += 1;
-    }
-</table>
-    }
-    @*if (liveGame.Data is null)
-            {
-                <p>loading...</p>
-            }
-
-
-            else
-            {
-        <table border="1" cellpadding="3">
+        @{ int index = 1;}
+        @{ string fontColor; }
+        @foreach (var _event in events)
+        {
+            fontColor = _event.StartTime.AddHours(9) < DateTime.Now ? "gray"
+                            : _event.StartTime.AddHours(9).Date == DateTime.Now.Date && _event.StartTime.AddHours(9).Month == DateTime.Now.Month ? "blue"
+                            : "black";
             <tr align="center">
-                <td>No.</td>
-                <td>League</td>
-                <td>Date</td>
-                <td>Match</td>
+                <td>@index</td>
+                <td>@_event.LeagueName</td>
+                <td><font color=@fontColor>@_event.StartTime.AddHours(9).ToString("yyyy/MM/dd(ddd) tt h시")</font></td>
+                <td align="right">@_event.HomeTeamCode <img src="@_event.HomeTeamImage" width="25" height="25" /></td>
+                <td align="center">vs</td>
+                <td align="left"><img src="@_event.AwayTeamImage" width="25" height="25" /> @_event.AwayTeamCode</td>
             </tr>
-            @{ int index = 1;}
-            @{ string fontColor; }
-            @foreach (var item in liveGame.Data.Schedule.Events)
-            {
-                @if (item.StartTime.Month >= 6)
-                {
-                    fontColor = item.StartTime.ToLocalTime() < DateTime.Now ? "red"
-                        : item.StartTime.ToLocalTime().Date == DateTime.Now.Date && item.StartTime.ToLocalTime().Month == DateTime.Now.Month ? "blue"
-                        : "black";
-                    <tr>
-                        <td>@index</td>
-                        <td><font color="@fontColor">@item.StartTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</font></td>
-                        <td>@item.League.Name</td>
-                        @if (item.Match is null)
-                        {
-                            <td>No Match.</td>
-                        }
-                        else
-                        {
-                            <td width="200" align="center">@item.Match.Teams[0].Code <img src="@item.Match.Teams[0].Image" width="25" height="25" /> vs<img src="@item.Match.Teams[1].Image" width="25" height="25" /> @item.Match.Teams[1].Code</td>
-                        }
-                    </tr>
-                    index++;
+            index += 1;
+        }
+        </table>
                 }
-
             }
-
-
-            </table>
-
-            }*@
-
-}
 
 @code {
-    //private IEnumerable<Schedule> schedules = Array.Empty<Schedule>();
-    //private LeagueSchedule leagueSchedule = new LeagueSchedule();
     private JObject JObjSchedules;
 
     private bool getSchedulesError;
@@ -160,7 +110,6 @@ else
         if (response.IsSuccessStatusCode)
         {
             responseString = await response.Content.ReadAsStringAsync();
-            //leagueSchedule = JsonConvert.DeserializeObject<LeagueSchedule>(responseString);
         }
         else
         {
@@ -187,162 +136,6 @@ else
             });
 
         }
-
-        //var request = new HttpRequestMessage(HttpMethod.Get,
-        //$"{API_URL_PERSISTED}/getSchedule?hl={hl}&leagueId={leagueId}&pageToken={pageToken}");
-        //request.Headers.Add("x-api-key", API_KEY);
-
-        //var client = ClientFactory.CreateClient();
-
-        //var response = await client.SendAsync(request);
-
-        //if (response.IsSuccessStatusCode)
-        //{
-        //    string responseString = await response.Content.ReadAsStringAsync();
-        //    leagueSchedule = JsonConvert.DeserializeObject<LeagueSchedule>(responseString);
-        //}
-        //else
-        //{
-        //    getBranchesError = true;
-        //}
-
         shouldRender = true;
     }
-
-    //public partial class LeagueSchedule
-    //{
-    //    [JsonProperty("data")]
-    //    public Data Data { get; set; }
-    //}
-
-    //public partial class Data
-    //{
-    //    [JsonProperty("schedule")]
-    //    public Schedule Schedule { get; set; }
-    //}
-
-    //public partial class Schedule
-    //{
-    //    [JsonProperty("events")]
-    //    public List<Event> Events { get; set; }
-
-    //    [JsonProperty("updated")]
-    //    public DateTime Updated { get; set; }
-
-    //    [JsonProperty("pages")]
-    //    public Pages pages { get; set; }
-    //}
-
-    //public partial class Pages
-    //{
-    //    [JsonProperty("older")]
-    //    public string older { get; set; }
-
-    //    [JsonProperty("newer")]
-    //    public string newer { get; set; }
-    //}
-
-    //public partial class Event
-    //{
-    //    [JsonProperty("startTime")]
-    //    public DateTime StartTime { get; set; }
-
-    //    [JsonProperty("blockName")]
-    //    public string BlockName { get; set; }
-
-    //    [JsonProperty("match")]
-    //    public Match Match { get; set; }
-
-    //    [JsonProperty("state")]
-    //    public string State { get; set; }
-
-    //    [JsonProperty("type")]
-    //    public string Type { get; set; }
-
-    //    [JsonProperty("id")]
-    //    public string Id { get; set; }
-
-    //    [JsonProperty("league")]
-    //    public League League { get; set; }
-    //}
-
-    //public partial class League
-    //{
-    //    [JsonProperty("name")]
-    //    public string Name { get; set; }
-
-    //    [JsonProperty("slug")]
-    //    public string Slug { get; set; }
-
-    //    [JsonProperty("id")]
-    //    public string Id { get; set; }
-
-    //    [JsonProperty("image")]
-    //    public string Image { get; set; }
-
-    //    [JsonProperty("priority")]
-    //    public long Priority { get; set; }
-    //}
-
-    //public partial class Match
-    //{
-    //    [JsonProperty("teams")]
-    //    public List<Team> Teams { get; set; }
-
-    //    [JsonProperty("id")]
-    //    public string Id { get; set; }
-
-    //    [JsonProperty("strategy")]
-    //    public Strategy Strategy { get; set; }
-    //}
-
-    //public partial class Strategy
-    //{
-    //    [JsonProperty("count")]
-    //    public long Count { get; set; }
-
-    //    [JsonProperty("type")]
-    //    public string Type { get; set; }
-    //}
-
-    //public partial class Team
-    //{
-    //    [JsonProperty("code")]
-    //    public string Code { get; set; }
-
-    //    [JsonProperty("image")]
-    //    public string Image { get; set; }
-
-    //    [JsonProperty("name")]
-    //    public string Name { get; set; }
-
-    //    [JsonProperty("result", NullValueHandling = NullValueHandling.Ignore)]
-    //    public Result Result { get; set; }
-
-    //    [JsonProperty("slug", NullValueHandling = NullValueHandling.Ignore)]
-    //    public string Slug { get; set; }
-
-    //    [JsonProperty("record", NullValueHandling = NullValueHandling.Ignore)]
-    //    public Record Record { get; set; }
-    //}
-
-    //public partial class Record
-    //{
-    //    [JsonProperty("losses")]
-    //    public long Losses { get; set; }
-
-    //    [JsonProperty("wins")]
-    //    public long Wins { get; set; }
-    //}
-
-    //public partial class Result
-    //{
-    //    [JsonProperty("gameWins")]
-    //    public long GameWins { get; set; }
-
-    //    [JsonProperty("outcome")]
-    //    public string Outcome { get; set; }
-    //}
-
-
 }
