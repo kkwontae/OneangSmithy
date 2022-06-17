@@ -69,8 +69,6 @@ namespace OneangSmithy_Server
             services.AddScoped<HttpClient>();
             // Pass settings to other components
             services.AddSingleton<IConfiguration>(Configuration);
-
-
             
         }
 

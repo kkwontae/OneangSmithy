@@ -3,7 +3,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:3.1
 COPY . /app
 WORKDIR /app
-#COPY ["Startup.cs", "/SSL/bundle.pfx"]
+COPY ["bundle.pfx", "/SSL/bundle.pfx"]
 ENV ASPNETCORE_URLS http://*:8778;https://*:8779
 ENV ASPNETCORE_HTTPS_PORT=8779
 ENV ASPNETCORE_Kestrel__Certificates__Default__Password=z0mk1n9
